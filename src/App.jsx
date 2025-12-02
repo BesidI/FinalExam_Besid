@@ -2,6 +2,7 @@ import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Card from "./Card";
 import ProductDetail from "./productsDetails";
+import AddProductForm from "./AddProductForms";
 import "./app.css";
 import {
   AirCirculatingProducts,
