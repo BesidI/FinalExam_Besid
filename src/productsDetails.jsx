@@ -21,16 +21,11 @@ function ProductDetail() {
   }
 
   return (
-    <div style={{ padding: "24px", maxWidth: "800px", margin: "0 auto" }}>
+    <div className="detail-container">
       <Link to="/">← Back to Inventory</Link>
-      <h2 style={{ marginTop: "12px" }}>{product.name}</h2>
-      {/* Product image and details */}
-      <img
-        src={product.image}
-        alt={product.name}
-        style={{ width: "100%", maxWidth: "400px", borderRadius: "8px", marginTop: "16px" }}
-      />
-      <p><strong>Price:</strong> ${product.price}</p>
+      <h2>{product.name}</h2>
+      <img src={product.image} alt={product.name} className="detail-image" />
+      <p><strong>Price:</strong> ₱{product.price}</p>
       <p><strong>Description:</strong> {product.description || "No description available."}</p>
     </div>
   );

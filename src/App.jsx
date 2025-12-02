@@ -13,15 +13,16 @@ const allProducts = [
   { title: "Air Circulating Appliance", items: AirCirculatingProducts },
   { title: "Major Appliance", items: MajorProducts },
   { title: "Cooking Appliance", items: CookingAppliancesProducts }
-  
 ];
 
 function App() {
   const [categoryFilter, setCategoryFilter] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [quantities, setQuantities] = useState({});
+  const [customProducts, setCustomProducts] = useState([]);
 
-  
-  const filteredCards = allProducts
+  // Filter logic
+  const filteredCards = [...allProducts, { title: "Custom Products", items: customProducts }]
     .filter(card => !categoryFilter || card.title === categoryFilter)
     .map(card => ({
       ...card,
@@ -31,23 +32,15 @@ function App() {
     }))
     .filter(card => card.items.length > 0);
 
+  // Compute overall total
+  const overallTotal = filteredCards
+    .flatMap(card => card.items)
+    .reduce((acc, p) => acc + p.price * (quantities[p.id] || 0), 0);
+
   return (
     <Router>
-      <div
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          padding: "24px",
-          boxSizing: "border-box",
-          backgroundColor: "#f0f0f0"
-        }}
-      >
-        <h1 style={{ textAlign: "center", marginBottom: "24px" }}>
-          Home Appliance Inventory
-        </h1>
+      <div className="app-container">
+        <h1>🏠 Home Appliance Inventory</h1>
 
         <Routes>
           {/* Inventory */}
@@ -55,20 +48,11 @@ function App() {
             path="/"
             element={
               <>
-                {/* Search bar */}
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "12px",
-                    marginBottom: "24px",
-                    flexWrap: "wrap",
-                    justifyContent: "center"
-                  }}
-                >
+                {/* Search + Filter */}
+                <div className="filter-bar">
                   <select
                     value={categoryFilter}
                     onChange={e => setCategoryFilter(e.target.value)}
-                    style={{ padding: "8px", fontSize: "16px" }}
                   >
                     <option value="">All Categories</option>
                     {allProducts.map(card => (
@@ -76,31 +60,35 @@ function App() {
                         {card.title}
                       </option>
                     ))}
+                    <option value="Custom Products">Custom Products</option>
                   </select>
 
                   <input
                     type="text"
-                    placeholder="Product name"
+                    placeholder="Search product name"
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
-                    style={{ padding: "8px", fontSize: "16px", width: "240px" }}
                   />
                 </div>
 
-                {/* Filtered product */}
-                <div
-                  style={{
-                    width: "100%",
-                    maxWidth: "1200px",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "24px"
-                  }}
-                >
+                {/* Product Cards */}
+                <div className="card-section">
                   {filteredCards.map(card => (
-                    <Card key={card.title} title={card.title} products={card.items} />
+                    <Card
+                      key={card.title}
+                      title={card.title}
+                      products={card.items}
+                      quantities={quantities}
+                      setQuantities={setQuantities}
+                    />
                   ))}
                 </div>
+
+                {/* Totals */}
+                <h2>Total Value: ₱{overallTotal}</h2>
+
+                {/* Add Product Form */}
+                <AddProductForm addProduct={setCustomProducts} />
               </>
             }
           />

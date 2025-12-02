@@ -1,10 +1,7 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import "./card.css"; 
+import "./card.css";
 
-function Card({ title, products }) {
-  const [quantities, setQuantities] = useState({});
-
+function Card({ title, products, quantities, setQuantities }) {
   const handleChange = (id, delta) => {
     setQuantities(prev => ({
       ...prev,
@@ -19,7 +16,7 @@ function Card({ title, products }) {
       <div className="card-grid">
         {products.map((p) => (
           <div key={p.id} className="product-card">
-            {/*Product Image */}
+            {/* Image + Cart */}
             <div className="image-wrapper">
               <img src={p.image} alt={p.name} />
               <button
@@ -33,8 +30,12 @@ function Card({ title, products }) {
 
             <h3>{p.name}</h3>
             <p>Price: ₱{p.price}</p>
-            <p>Quantity: {quantities[p.id] || 0}</p>
+            <p style={{ color: (quantities[p.id] || 0) < 5 ? "red" : "black" }}>
+              Quantity: {quantities[p.id] || 0} {(quantities[p.id] || 0) < 5 && "(Low Stock)"}
+            </p>
+            <p>Subtotal: ₱{p.price * (quantities[p.id] || 0)}</p>
 
+            {/* Quantity Controls */}
             <div className="quantity-controls">
               <button
                 onClick={() => handleChange(p.id, -1)}
@@ -45,7 +46,7 @@ function Card({ title, products }) {
               <button onClick={() => handleChange(p.id, 1)}>+</button>
             </div>
 
-            {/* Product details page */}
+            {/* Details Page */}
             <Link to={`/product/${p.id}`} className="view-details">
               View Details
             </Link>
